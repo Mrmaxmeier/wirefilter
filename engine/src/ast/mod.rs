@@ -15,6 +15,7 @@ use std::fmt::{self, Debug};
 trait Expr<'s>: Sized + Eq + Debug + for<'i> LexWith<'i, &'s Scheme> + Serialize {
     fn uses(&self, field: Field<'s>) -> bool;
     fn compile(self) -> CompiledExpr<'s>;
+    fn dominating_boolean_matches(&self) -> Vec<&str>;
 }
 
 /// A parsed filter AST.
@@ -57,5 +58,12 @@ impl<'s> FilterAst<'s> {
     /// Compiles a [`FilterAst`] into a [`Filter`].
     pub fn compile(self) -> Filter<'s> {
         Filter::new(self.op.compile(), self.scheme)
+    }
+
+    /// Recursively checks a [`FilterAst`] for dominating IsTrue boolean matches.
+    ///
+    /// This is useful for optimized queries (i.e. determining indices for a filter).
+    pub fn dominating_boolean_matches(&self) -> Vec<&str> {
+        self.op.dominating_boolean_matches()
     }
 }

@@ -304,6 +304,13 @@ impl<'s> Expr<'s> for FieldExpr<'s> {
             },
         }
     }
+
+    fn dominating_boolean_matches(&self) -> Vec<&str> {
+        match (&self.op, &self.lhs) {
+            (FieldOp::IsTrue, LhsFieldExpr::Field(field)) => vec![field.name()],
+            _ => vec![],
+        }
+    }
 }
 
 #[cfg(test)]

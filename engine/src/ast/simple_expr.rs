@@ -67,6 +67,13 @@ impl<'s> Expr<'s> for SimpleExpr<'s> {
             }
         }
     }
+
+    fn dominating_boolean_matches(&self) -> Vec<&str> {
+        match &self {
+            SimpleExpr::Field(fexp) => fexp.dominating_boolean_matches(),
+            _ => vec![],
+        }
+    }
 }
 
 #[test]

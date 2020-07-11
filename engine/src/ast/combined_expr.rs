@@ -120,6 +120,20 @@ impl<'s> Expr<'s> for CombinedExpr<'s> {
             }
         }
     }
+
+    fn dominating_boolean_matches(&self) -> Vec<&str> {
+        match &self {
+            CombinedExpr::Simple(s) => s.dominating_boolean_matches(),
+            CombinedExpr::Combining {
+                op: CombiningOp::And,
+                items,
+            } => items
+                .iter()
+                .flat_map(|x| x.dominating_boolean_matches())
+                .collect(),
+            _ => vec![],
+        }
+    }
 }
 
 #[test]
